@@ -11,16 +11,28 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String ssn;
+    private String image;
 
     public UserDto() {
     }
 
-    public UserDto(Long id, String email, String firstName, String lastName, String ssn) {
+    public UserDto(Long id, String email, String firstName, String lastName, String ssn,String image) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.ssn = ssn;
+        this.image = image;
+    }
+
+
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public Long getId() {

@@ -6,6 +6,7 @@ import com.OrchestrationAPI.entity.User;
 import com.OrchestrationAPI.exception.UserNotFoundException;
 import com.OrchestrationAPI.mapper.UserMapper;
 import com.OrchestrationAPI.repository.UserRepository;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @PostConstruct
     public void loadUsersFromExternalApi() {
         log.info("Fetching users from external API");
         // Adjust this based on the actual structure of the API response
