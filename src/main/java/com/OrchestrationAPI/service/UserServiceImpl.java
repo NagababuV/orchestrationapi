@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @PostConstruct
     public void loadUsersFromExternalApi() {
         log.info("Fetching users from external API");
-        // Adjust this based on the actual structure of the API response
+
         ApiResponse response = restTemplate.getForObject(EXTERNAL_API_URL, ApiResponse.class);
 
         if (response != null && response.getUsers() != null) {
