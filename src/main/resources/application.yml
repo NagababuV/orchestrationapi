@@ -1,0 +1,17 @@
+resilience4j:
+  circuitbreaker:
+    instances:
+      userService:
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 2
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+
+  retry:
+    instances:
+      userService:
+        maxAttempts: 3
+        waitDuration: 2s

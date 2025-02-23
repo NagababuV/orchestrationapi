@@ -6,6 +6,8 @@ import com.OrchestrationAPI.entity.User;
 import com.OrchestrationAPI.exception.UserNotFoundException;
 import com.OrchestrationAPI.mapper.UserMapper;
 import com.OrchestrationAPI.repository.UserRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +32,13 @@ public class UserServiceImpl implements UserService {
     }
 
     private static final String EXTERNAL_API_URL = "https://dummyjson.com/users";
+    private static final String USER_SERVICE = "userService";
 
     @Override
     @Transactional
     @PostConstruct
+    @CircuitBreaker(name = USER_SERVICE, fallbackMethod = "fallbackLoadUsers")
+    @Retry(name = USER_SERVICE)
     public void loadUsersFromExternalApi() {
         log.info("Fetching users from external API");
 
@@ -49,8 +54,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    public void fallbackLoadUsers(Exception e) {
+        log.error("Fallback: Failed to load users from external API - {}", e.getMessage());
+    }
 
     @Override
+    @CircuitBreaker(name = USER_SERVICE, fallbackMethod = "fallbackGetAllUsers")
     public List<UserDto> getAllUsers() {
         List<User> users = userRepository.findAll();
         List<UserDto> userDtos = new ArrayList<>();
@@ -58,6 +67,11 @@ public class UserServiceImpl implements UserService {
             userDtos.add(UserMapper.toDto(user));
         }
         return userDtos;
+    }
+
+    public List<UserDto> fallbackGetAllUsers(Exception e) {
+        log.error("Fallback: Unable to fetch users - {}", e.getMessage());
+        return new ArrayList<>();
     }
 
     @Override
